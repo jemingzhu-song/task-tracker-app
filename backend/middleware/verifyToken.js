@@ -42,7 +42,7 @@ const verifyToken = (req, res, next) => {
         next();
       });
     } catch (err) {
-      res.status(400).json({ message: 'Invalid Token', err: err });
+      return res.status(400).json({ message: 'Invalid Token', err: err });
     }
   }
 };

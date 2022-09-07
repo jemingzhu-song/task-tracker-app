@@ -44,7 +44,6 @@ router.post('/', async (req, res) => {
     const newTask = new Task({ description: description, status: status });
     user.tasks.push(newTask);
     user.save();
-    res.json(newTask);
     sendResponseJSON(res, 200, newTask);
   } catch (err) {
     sendResponseJSON(res, 400, err);

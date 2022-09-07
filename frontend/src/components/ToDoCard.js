@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@mui/material/Typography';
 import { Button, Card, Checkbox, TextField } from '@mui/material';
+import { TaskStatus } from '../enums/TaskEnums';
 
 function ToDoCard({
   loggedIn,
@@ -17,7 +18,7 @@ function ToDoCard({
 }) {
   const [id, setId] = useState(idInput);
   const [taskId, setTaskId] = useState(taskIdInput);
-  const [checked, setChecked] = useState(checkedInput === 'Incomplete' ? false : true);
+  const [checked, setChecked] = useState(checkedInput === TaskStatus.INCOMPLETE ? false : true);
   const [edit, setEdit] = useState(false);
   const [description, setDescription] = useState(descriptionInput);
 
@@ -85,6 +86,38 @@ function ToDoCard({
     }
   };
 
+  const handleCheckbox = () => {
+    // Since "setChecked()" and "saveToDoCard()" are both async functions.
+    let currentChecked = checked;
+    setChecked(!currentChecked);
+    let status = !currentChecked ? TaskStatus.COMPLETE : TaskStatus.INCOMPLETE;
+    updateList(id, description, status);
+    if (loggedIn) {
+      saveToDoCard(status);
+    }
+  };
+
+  const handleTextField = (textFieldValue) => {
+    setDescription(textFieldValue);
+    let status = checked ? TaskStatus.COMPLETE : TaskStatus.INCOMPLETE;
+    updateList(id, description, status);
+  };
+
+  const handleTextFieldBlur = () => {
+    setEdit(false);
+    if (loggedIn) {
+      let status = checked ? TaskStatus.COMPLETE : TaskStatus.INCOMPLETE;
+      saveToDoCard(status);
+    }
+  };
+
+  const handleButton = () => {
+    removeFromList(id);
+    if (loggedIn) {
+      removeToDoCard();
+    }
+  };
+
   return (
     <Card
       sx={{
@@ -96,36 +129,15 @@ function ToDoCard({
         padding: '10px 10px',
       }}
     >
-      <Checkbox
-        color='success'
-        checked={checked}
-        onChange={() => {
-          // Since "setChecked()" and "saveToDoCard()" are both async functions.
-          let currentChecked = checked;
-          setChecked(!currentChecked);
-          let status = !currentChecked ? 'Complete' : 'Incomplete';
-          updateList(id, description, status);
-          if (loggedIn) {
-            saveToDoCard(status);
-          }
-        }}
-      ></Checkbox>
+      <Checkbox color='success' checked={checked} onChange={handleCheckbox}></Checkbox>
       {edit ? (
         <TextField
           sx={{ width: '360px', margin: '6px 0' }}
           value={description}
           onChange={(e) => {
-            setDescription(e.target.value);
-            let status = checked ? 'Complete' : 'Incomplete';
-            updateList(id, description, status);
+            handleTextField(e.target.value);
           }}
-          onBlur={() => {
-            setEdit(false);
-            if (loggedIn) {
-              let status = checked ? 'Complete' : 'Incomplete';
-              saveToDoCard(status);
-            }
-          }}
+          onBlur={handleTextFieldBlur}
           id='standard-basic'
           variant='standard'
           color='secondary'
@@ -139,15 +151,7 @@ function ToDoCard({
           {description}
         </Typography>
       )}
-      <Button
-        color='error'
-        onClick={() => {
-          removeFromList(id);
-          if (loggedIn) {
-            removeToDoCard();
-          }
-        }}
-      >
+      <Button color='error' onClick={handleButton}>
         Delete
       </Button>
     </Card>

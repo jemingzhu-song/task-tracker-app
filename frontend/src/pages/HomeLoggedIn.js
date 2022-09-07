@@ -5,10 +5,10 @@ import { Button, Card, Checkbox } from '@mui/material';
 import ToDoCard from '../components/ToDoCard';
 import uuid from 'react-uuid';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { updateListToDoCards, removeCardFromListToDoCards } from '../helper/TaskFunctions';
+import { TaskStatus, TaskDescription } from '../enums/TaskEnums';
 
 function HomeLoggedIn({ getToken, getRefreshToken, updateAccessToken }) {
-  const navigate = useNavigate();
   /* Status Codes:
       'Incomplete'
       'Complete'
@@ -22,12 +22,9 @@ function HomeLoggedIn({ getToken, getRefreshToken, updateAccessToken }) {
   }, []);
 
   const createNewCard = async () => {
-    const description = 'To Do';
-    const status = 'Incomplete';
-
     const toDoCardDetails = {
-      description: description,
-      status: status,
+      description: TaskDescription.DEFAULT,
+      status: TaskStatus.INCOMPLETE,
     };
 
     const requestOptions = {
@@ -57,27 +54,15 @@ function HomeLoggedIn({ getToken, getRefreshToken, updateAccessToken }) {
       setListToDoCards((listToDoCards) => {
         return [
           ...listToDoCards,
-          { id: uuid(), taskId: newTaskId, description: description, status: status },
+          {
+            id: uuid(),
+            taskId: newTaskId,
+            description: TaskDescription.DEFAULT,
+            status: TaskStatus.INCOMPLETE,
+          },
         ];
       });
     }
-  };
-
-  const updateListToDoCards = (cardId, newDescription, newStatus) => {
-    let current = listToDoCards;
-    current.map((card) => {
-      if (card.id === cardId) {
-        card.description = newDescription;
-        card.status = newStatus;
-      }
-    });
-    setListToDoCards(current);
-  };
-
-  const removeCardFromListToDoCards = (cardId) => {
-    let current = listToDoCards;
-    const result = current.filter((card) => card.id !== cardId);
-    setListToDoCards(result);
   };
 
   const getToDoCards = async () => {
@@ -110,6 +95,14 @@ function HomeLoggedIn({ getToken, getRefreshToken, updateAccessToken }) {
     }
   };
 
+  const updateList = (cardId, newDescription, newStatus) => {
+    updateListToDoCards(listToDoCards, setListToDoCards, cardId, newDescription, newStatus);
+  };
+
+  const removeFromList = (cardId) => {
+    removeCardFromListToDoCards(listToDoCards, setListToDoCards, cardId);
+  };
+
   return (
     <Box
       sx={{
@@ -126,8 +119,8 @@ function HomeLoggedIn({ getToken, getRefreshToken, updateAccessToken }) {
           loggedIn={true}
           getToken={getToken}
           getRefreshToken={getRefreshToken}
-          updateList={updateListToDoCards}
-          removeFromList={removeCardFromListToDoCards}
+          updateList={updateList}
+          removeFromList={removeFromList}
           idInput={item.id}
           taskIdInput={item.taskId}
           descriptionInput={item.description}

@@ -146,6 +146,42 @@ function AccountDetails({ getToken, getRefreshToken, updateAccessToken }) {
       );
   };
 
+  const handleEditFirstNameButton = () => {
+    if (editFirstName) {
+      setEditFirstName(false);
+      saveDetails();
+    } else {
+      setEditFirstName(true);
+    }
+  };
+
+  const handleEditLastNameButton = () => {
+    if (editLastName) {
+      setEditLastName(false);
+      saveDetails();
+    } else {
+      setEditLastName(true);
+    }
+  };
+
+  const handleEditEmailButton = () => {
+    if (editEmail) {
+      setEditEmail(false);
+      saveDetails();
+    } else {
+      setEditEmail(true);
+    }
+  };
+
+  const handleEditPasswordButton = () => {
+    if (editPasword) {
+      setEditPassword(false);
+      saveDetails();
+    } else {
+      setEditPassword(true);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -185,14 +221,7 @@ function AccountDetails({ getToken, getRefreshToken, updateAccessToken }) {
           <Button
             color={editFirstName ? 'success' : 'info'}
             sx={{ margin: '6px 0', textTransform: 'none' }}
-            onClick={() => {
-              if (editFirstName) {
-                setEditFirstName(false);
-                saveDetails();
-              } else {
-                setEditFirstName(true);
-              }
-            }}
+            onClick={handleEditFirstNameButton}
           >
             {editFirstName ? (
               <Typography variant='body1'>Save</Typography>
@@ -230,14 +259,7 @@ function AccountDetails({ getToken, getRefreshToken, updateAccessToken }) {
           <Button
             color={editLastName ? 'success' : 'info'}
             sx={{ margin: '6px 0', textTransform: 'none' }}
-            onClick={() => {
-              if (editLastName) {
-                setEditLastName(false);
-                saveDetails();
-              } else {
-                setEditLastName(true);
-              }
-            }}
+            onClick={handleEditLastNameButton}
           >
             {editLastName ? (
               <Typography variant='body1'>Save</Typography>
@@ -275,14 +297,7 @@ function AccountDetails({ getToken, getRefreshToken, updateAccessToken }) {
           <Button
             color={editEmail ? 'success' : 'info'}
             sx={{ margin: '6px 0', textTransform: 'none' }}
-            onClick={() => {
-              if (editEmail) {
-                setEditEmail(false);
-                saveDetails();
-              } else {
-                setEditEmail(true);
-              }
-            }}
+            onClick={handleEditEmailButton}
           >
             {editEmail ? (
               <Typography variant='body1'>Save</Typography>
@@ -320,14 +335,7 @@ function AccountDetails({ getToken, getRefreshToken, updateAccessToken }) {
           <Button
             color={editPasword ? 'success' : 'info'}
             sx={{ margin: '6px 0', textTransform: 'none' }}
-            onClick={() => {
-              if (editPasword) {
-                setEditPassword(false);
-                saveDetails();
-              } else {
-                setEditPassword(true);
-              }
-            }}
+            onClick={handleEditPasswordButton}
           >
             {editPasword ? (
               <Typography variant='body1'>Save</Typography>

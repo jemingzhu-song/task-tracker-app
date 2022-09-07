@@ -4,6 +4,8 @@ import { Box } from '@mui/system';
 import { Button, Card, Checkbox } from '@mui/material';
 import ToDoCard from '../components/ToDoCard';
 import uuid from 'react-uuid';
+import { updateListToDoCards, removeCardFromListToDoCards } from '../helper/TaskFunctions';
+import { TaskStatus, TaskDescription } from '../enums/TaskEnums';
 
 function HomeLoggedOut() {
   /* Status Codes:
@@ -12,27 +14,23 @@ function HomeLoggedOut() {
       'InProgress' - (Future Implementation)
   */
   const [listToDoCards, setListToDoCards] = useState([]);
-  const addCard = () => {
+  const createNewCard = () => {
     setListToDoCards((listToDoCards) => {
-      return [...listToDoCards, { id: uuid(), description: 'To Do', status: 'Incomplete' }];
+      const newCard = {
+        id: uuid(),
+        description: TaskDescription.DEFAULT,
+        status: TaskStatus.INCOMPLETE,
+      };
+      return [...listToDoCards, newCard];
     });
   };
 
-  const updateListToDoCards = (cardId, newDescription, newStatus) => {
-    let current = listToDoCards;
-    current.map((card) => {
-      if (card.id === cardId) {
-        card.description = newDescription;
-        card.status = newStatus;
-      }
-    });
-    setListToDoCards(current);
+  const updateList = (cardId, newDescription, newStatus) => {
+    updateListToDoCards(listToDoCards, setListToDoCards, cardId, newDescription, newStatus);
   };
 
-  const removeCardFromListToDoCards = (cardId) => {
-    let current = listToDoCards;
-    const result = current.filter((card) => card.id !== cardId);
-    setListToDoCards(result);
+  const removeFromList = (cardId) => {
+    removeCardFromListToDoCards(listToDoCards, setListToDoCards, cardId);
   };
 
   return (
@@ -49,14 +47,14 @@ function HomeLoggedOut() {
         <ToDoCard
           key={item.id}
           loggedIn={false}
-          updateList={updateListToDoCards}
-          removeFromList={removeCardFromListToDoCards}
+          updateList={updateList}
+          removeFromList={removeFromList}
           idInput={item.id}
           descriptionInput={item.description}
           checkedInput={item.status}
         ></ToDoCard>
       ))}
-      <Button color='inherit' sx={{ margin: '6px 0', textTransform: 'none' }} onClick={addCard}>
+      <Button color='inherit' sx={{ margin: '6px 0', textTransform: 'none' }} onClick={createNewCard}>
         <Typography variant='body1'>Add</Typography>
       </Button>
     </Box>
